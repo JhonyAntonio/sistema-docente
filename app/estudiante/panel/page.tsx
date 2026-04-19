@@ -323,23 +323,35 @@ export default function PanelEstudiante() {
 
   const totalRegistros = asistencias.length;
 
-  const totalAsistio = asistencias.filter((item) => {
-    const estado = item.estado?.toLowerCase().trim();
-    return estado === "asistió" || estado === "asistio" || estado === "j";
-  }).length;
+const totalAsistio = asistencias.filter((item) => {
+  const estado = item.estado?.toUpperCase().trim();
+  return estado === "A";
+}).length;
 
-  const totalFaltas = asistencias.filter((item) => {
-    const estado = item.estado?.toLowerCase().trim();
-    return estado === "falta" || estado === "f";
-  }).length;
+const totalTardanzas = asistencias.filter((item) => {
+  const estado = item.estado?.toUpperCase().trim();
+  return estado === "T";
+}).length;
 
-  const totalTardanzas = asistencias.filter((item) => {
-    const estado = item.estado?.toLowerCase().trim();
-    return estado === "tardanza" || estado === "t";
-  }).length;
+const totalJustificados = asistencias.filter((item) => {
+  const estado = item.estado?.toUpperCase().trim();
+  return estado === "J";
+}).length;
 
-  const porcentajeAsistencia =
-    totalRegistros > 0 ? ((totalAsistio / totalRegistros) * 100).toFixed(1) : "0.0";
+const totalFaltas = asistencias.filter((item) => {
+  const estado = item.estado?.toUpperCase().trim();
+  return estado === "F";
+}).length;
+
+const totalInstitucionales = asistencias.filter((item) => {
+  const estado = item.estado?.toUpperCase().trim();
+  return estado === "I";
+}).length;
+
+const porcentajeAsistencia =
+  totalRegistros > 0
+    ? (((totalAsistio + totalTardanzas) / totalRegistros) * 100).toFixed(1)
+    : "0.0";
 
   const notasUnidadSeleccionada = useMemo(() => {
     return notas.filter((nota) => nota.unidad === unidadSeleccionada);
@@ -408,8 +420,10 @@ export default function PanelEstudiante() {
 
             <p style={textRow}><strong>Total de registros:</strong> {totalRegistros}</p>
             <p style={textRow}><strong>Asistencias:</strong> {totalAsistio}</p>
-            <p style={textRow}><strong>Faltas:</strong> {totalFaltas}</p>
             <p style={textRow}><strong>Tardanzas:</strong> {totalTardanzas}</p>
+            <p style={textRow}><strong>Justificados:</strong> {totalJustificados}</p>
+            <p style={textRow}><strong>Faltas:</strong> {totalFaltas}</p>
+            <p style={textRow}><strong>Actividades institucionales:</strong> {totalInstitucionales}</p>
             <p style={textRow}><strong>Porcentaje:</strong> {porcentajeAsistencia}%</p>
           </div>
         </div>
