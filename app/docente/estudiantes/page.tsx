@@ -683,6 +683,7 @@ export default function EstudiantesPage() {
                   <label style={labelStyle}>DNI</label>
                   <input
                     type="text"
+                    inputMode="numeric"
                     value={dni}
                     onChange={(e) => setDni(e.target.value)}
                     style={inputStyle}
@@ -695,6 +696,7 @@ export default function EstudiantesPage() {
                   <label style={labelStyle}>Teléfono</label>
                   <input
                     type="text"
+                    inputMode="numeric"
                     value={telefono}
                     onChange={(e) => setTelefono(e.target.value)}
                     style={inputStyle}
@@ -733,6 +735,8 @@ export default function EstudiantesPage() {
                     style={{
                       ...inputStyle,
                       backgroundColor: "#f1f5f9",
+                      color: "#111",
+                      WebkitTextFillColor: "#111",
                       cursor: "not-allowed",
                     }}
                   />
@@ -747,6 +751,8 @@ export default function EstudiantesPage() {
                     style={{
                       ...inputStyle,
                       backgroundColor: "#f1f5f9",
+                      color: "#111",
+                      WebkitTextFillColor: "#111",
                       cursor: "not-allowed",
                     }}
                   />
@@ -777,6 +783,8 @@ export default function EstudiantesPage() {
                     style={{
                       ...inputStyle,
                       backgroundColor: "#f1f5f9",
+                      color: "#111",
+                      WebkitTextFillColor: "#111",
                       cursor: "not-allowed",
                     }}
                   />
@@ -856,4 +864,9 @@ const inputStyle = {
   border: "1px solid #ccc",
   outline: "none",
   boxSizing: "border-box" as const,
+  color: "#111",
+  backgroundColor: "#ffffff",
+  opacity: 1, 
+  WebkitTextFillColor: "#111",
+  fontSize: "16px", 
 };

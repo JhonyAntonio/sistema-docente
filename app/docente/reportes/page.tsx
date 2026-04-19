@@ -235,18 +235,6 @@ export default function ReportesPage() {
     return capacidad ? capacidad.nombre : "Capacidad no encontrada";
   };
 
-  const obtenerNombreEstudiante = (id: number) => {
-    const estudiante = estudiantes.find((item) => item.id === id);
-    return estudiante
-      ? `${estudiante.apellidos}, ${estudiante.nombres}`
-      : "Estudiante no encontrado";
-  };
-
-  const obtenerDniEstudiante = (id: number) => {
-    const estudiante = estudiantes.find((item) => item.id === id);
-    return estudiante ? estudiante.dni : "-";
-  };
-
   const convertirNotaAValor = (nota: string) => {
     switch (nota) {
       case "AD":
@@ -354,7 +342,10 @@ export default function ReportesPage() {
 
     estudiantesDeAsignaturaNotas.forEach((estudiante) => {
       const notasUnidad = calificacionesFiltradas
-        .map((cal) => detallePorCalificacionYEstudiante[`${cal.id}-${estudiante.id}`]?.nota || "")
+        .map(
+          (cal) =>
+            detallePorCalificacionYEstudiante[`${cal.id}-${estudiante.id}`]?.nota ?? ""
+        )
         .filter((nota) => nota !== "");
 
       if (notasUnidad.length === 0) {
@@ -451,7 +442,7 @@ export default function ReportesPage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "2fr 1fr",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
                 gap: "18px",
                 alignItems: "end",
               }}
@@ -596,7 +587,7 @@ export default function ReportesPage() {
 
                                 return (
                                   <td key={col.calificacionId} style={tdStyle}>
-                                    {detalle?.nota || "-"}
+                                    {detalle?.nota ?? "-"}
                                   </td>
                                 );
                               })
@@ -633,7 +624,7 @@ export default function ReportesPage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "2fr 1fr 1fr",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
                 gap: "18px",
                 alignItems: "end",
               }}
@@ -792,6 +783,11 @@ const inputStyle = {
   border: "1px solid #ccc",
   outline: "none",
   boxSizing: "border-box" as const,
+  color: "#111",
+  backgroundColor: "#ffffff",
+  opacity: 1,
+  WebkitTextFillColor: "#111",
+  fontSize: "16px",
 };
 
 const thStyle = {

@@ -173,15 +173,7 @@ export default function GestionAcademicaPage() {
         padding: "25px",
       }}
     >
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "12px",
-          padding: "20px",
-          marginBottom: "20px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-        }}
-      >
+      <div style={cardStyle}>
         <h1 style={{ margin: 0, color: "#1e3c72" }}>Gestión Académica</h1>
         <p style={{ marginTop: "8px", color: "#666" }}>
           Crea asignaturas por área, grado y sección.
@@ -193,168 +185,94 @@ export default function GestionAcademicaPage() {
           display: "flex",
           justifyContent: "flex-end",
           marginBottom: "20px",
+          flexWrap: "wrap",
+          gap: "10px",
         }}
       >
-        <button
-          onClick={abrirFormularioNuevo}
-          style={{
-            backgroundColor: "#17a2b8",
-            color: "white",
-            border: "none",
-            padding: "12px 20px",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            fontSize: "14px",
-          }}
-        >
+        <button onClick={abrirFormularioNuevo} style={btnPrimary}>
           + Crear Asignatura
         </button>
       </div>
 
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "12px",
-          padding: "20px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-          overflowX: "auto",
-        }}
-      >
+      <div style={tableCardStyle}>
         <h2 style={{ marginTop: 0, color: "#333" }}>Lista de Asignaturas</h2>
 
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            marginTop: "15px",
-          }}
-        >
-          <thead>
-            <tr style={{ backgroundColor: "#e9f2ff" }}>
-              <th style={thStyle}>ID</th>
-              <th style={thStyle}>Área</th>
-              <th style={thStyle}>Grado</th>
-              <th style={thStyle}>Sección</th>
-              <th style={thStyle}>Estado</th>
-              <th style={thStyle}>Acción</th>
-            </tr>
-          </thead>
+        <div style={{ width: "100%", overflowX: "auto", marginTop: "15px" }}>
+          <table
+            style={{
+              width: "100%",
+              minWidth: "760px",
+              borderCollapse: "collapse",
+            }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: "#e9f2ff" }}>
+                <th style={thStyle}>ID</th>
+                <th style={thStyle}>Área</th>
+                <th style={thStyle}>Grado</th>
+                <th style={thStyle}>Sección</th>
+                <th style={thStyle}>Estado</th>
+                <th style={thStyle}>Acción</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {asignaturas.length > 0 ? (
-              asignaturas.map((asig) => (
-                <tr key={asig.id}>
-                  <td style={tdStyle}>{asig.id}</td>
-                  <td style={tdStyle}>{obtenerNombreArea(asig.area_id)}</td>
-                  <td style={tdStyle}>{asig.grado}</td>
-                  <td style={tdStyle}>{asig.seccion}</td>
-                  <td style={tdStyle}>
-                    <span
-                      style={{
-                        backgroundColor: "#28a745",
-                        color: "white",
-                        padding: "4px 10px",
-                        borderRadius: "12px",
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {asig.estado}
-                    </span>
-                  </td>
-                  <td style={tdStyle}>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <button
-                        onClick={() => editarAsignatura(asig)}
+            <tbody>
+              {asignaturas.length > 0 ? (
+                asignaturas.map((asig) => (
+                  <tr key={asig.id}>
+                    <td style={tdStyle}>{asig.id}</td>
+                    <td style={tdStyle}>{obtenerNombreArea(asig.area_id)}</td>
+                    <td style={tdStyle}>{asig.grado}</td>
+                    <td style={tdStyle}>{asig.seccion}</td>
+                    <td style={tdStyle}>
+                      <span style={badgeActivoStyle}>{asig.estado}</span>
+                    </td>
+                    <td style={tdStyle}>
+                      <div
                         style={{
-                          backgroundColor: "#007bff",
-                          color: "white",
-                          border: "none",
-                          padding: "8px 12px",
-                          borderRadius: "6px",
-                          cursor: "pointer",
-                          fontWeight: "bold",
+                          display: "flex",
+                          gap: "8px",
+                          flexWrap: "wrap",
                         }}
                       >
-                        Editar
-                      </button>
+                        <button
+                          onClick={() => editarAsignatura(asig)}
+                          style={btnEdit}
+                        >
+                          Editar
+                        </button>
 
-                      <button
-                        onClick={() => eliminarAsignatura(asig.id)}
-                        style={{
-                          backgroundColor: "#dc3545",
-                          color: "white",
-                          border: "none",
-                          padding: "8px 12px",
-                          borderRadius: "6px",
-                          cursor: "pointer",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
+                        <button
+                          onClick={() => eliminarAsignatura(asig.id)}
+                          style={btnDelete}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td style={tdStyle} colSpan={6}>
+                    No hay asignaturas registradas
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td style={tdStyle} colSpan={6}>
-                  No hay asignaturas registradas
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {mostrarFormulario && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundColor: "rgba(0,0,0,0.45)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              width: "700px",
-              maxWidth: "95%",
-              borderRadius: "14px",
-              boxShadow: "0 8px 25px rgba(0,0,0,0.25)",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                padding: "18px 22px",
-                backgroundColor: "#f1f5f9",
-                borderBottom: "1px solid #ddd",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <h2 style={{ margin: 0 }}>
+        <div style={overlayStyle}>
+          <div style={modalStyle}>
+            <div style={modalHeaderStyle}>
+              <h2 style={{ margin: 0, color: "#111" }}>
                 {modoEdicion ? "Editar Asignatura" : "Crear Asignatura"}
               </h2>
 
-              <button
-                onClick={cerrarFormulario}
-                style={{
-                  border: "none",
-                  background: "transparent",
-                  fontSize: "22px",
-                  cursor: "pointer",
-                  color: "#666",
-                }}
-              >
+              <button onClick={cerrarFormulario} style={closeButtonStyle}>
                 ×
               </button>
             </div>
@@ -363,7 +281,7 @@ export default function GestionAcademicaPage() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
                   gap: "18px",
                 }}
               >
@@ -412,35 +330,20 @@ export default function GestionAcademicaPage() {
                   display: "flex",
                   justifyContent: "center",
                   gap: "12px",
+                  flexWrap: "wrap",
                 }}
               >
                 <button
                   onClick={modoEdicion ? actualizarAsignatura : crearAsignatura}
                   style={{
+                    ...btnPrimary,
                     backgroundColor: modoEdicion ? "#007bff" : "#17a2b8",
-                    color: "white",
-                    border: "none",
-                    padding: "12px 22px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontWeight: "bold",
                   }}
                 >
                   {modoEdicion ? "Actualizar" : "Guardar"}
                 </button>
 
-                <button
-                  onClick={cerrarFormulario}
-                  style={{
-                    backgroundColor: "#6c757d",
-                    color: "white",
-                    border: "none",
-                    padding: "12px 22px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                  }}
-                >
+                <button onClick={cerrarFormulario} style={btnGray}>
                   Cancelar
                 </button>
               </div>
@@ -452,17 +355,34 @@ export default function GestionAcademicaPage() {
   );
 }
 
+const cardStyle = {
+  backgroundColor: "white",
+  borderRadius: "12px",
+  padding: "20px",
+  marginBottom: "20px",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+};
+
+const tableCardStyle = {
+  backgroundColor: "white",
+  borderRadius: "12px",
+  padding: "20px",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+};
+
 const thStyle = {
   padding: "12px",
   border: "1px solid #ddd",
   textAlign: "left" as const,
   color: "#333",
+  backgroundColor: "#e9f2ff",
 };
 
 const tdStyle = {
   padding: "12px",
   border: "1px solid #ddd",
   color: "#333",
+  verticalAlign: "middle" as const,
 };
 
 const labelStyle = {
@@ -479,4 +399,98 @@ const inputStyle = {
   border: "1px solid #ccc",
   outline: "none",
   boxSizing: "border-box" as const,
+  color: "#111",
+  backgroundColor: "#ffffff",
+  opacity: 1,
+  WebkitTextFillColor: "#111",
+  fontSize: "16px",
+};
+
+const btnPrimary = {
+  backgroundColor: "#17a2b8",
+  color: "white",
+  border: "none",
+  padding: "12px 20px",
+  borderRadius: "8px",
+  cursor: "pointer",
+  fontWeight: "bold",
+  fontSize: "14px",
+};
+
+const btnGray = {
+  backgroundColor: "#6c757d",
+  color: "white",
+  border: "none",
+  padding: "12px 22px",
+  borderRadius: "8px",
+  cursor: "pointer",
+  fontWeight: "bold",
+};
+
+const btnEdit = {
+  backgroundColor: "#007bff",
+  color: "white",
+  border: "none",
+  padding: "8px 12px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontWeight: "bold",
+};
+
+const btnDelete = {
+  backgroundColor: "#dc3545",
+  color: "white",
+  border: "none",
+  padding: "8px 12px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontWeight: "bold",
+};
+
+const badgeActivoStyle = {
+  backgroundColor: "#28a745",
+  color: "white",
+  padding: "4px 10px",
+  borderRadius: "12px",
+  fontSize: "12px",
+  fontWeight: "bold",
+};
+
+const overlayStyle = {
+  position: "fixed" as const,
+  inset: 0,
+  backgroundColor: "rgba(0,0,0,0.45)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 1000,
+  padding: "12px",
+};
+
+const modalStyle = {
+  backgroundColor: "white",
+  width: "700px",
+  maxWidth: "95%",
+  borderRadius: "14px",
+  boxShadow: "0 8px 25px rgba(0,0,0,0.25)",
+  overflow: "hidden",
+};
+
+const modalHeaderStyle = {
+  padding: "18px 22px",
+  backgroundColor: "#f1f5f9",
+  borderBottom: "1px solid #ddd",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "12px",
+};
+
+const closeButtonStyle = {
+  border: "none",
+  background: "transparent",
+  fontSize: "22px",
+  cursor: "pointer",
+  color: "#666",
+  fontWeight: "bold",
 };

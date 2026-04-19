@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 export default function DocenteLayout({
@@ -11,6 +11,7 @@ export default function DocenteLayout({
   children: ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const cerrarSesion = async () => {
     const confirmar = window.confirm("¿Seguro que deseas cerrar sesión?");
@@ -26,6 +27,28 @@ export default function DocenteLayout({
 
     router.push("/");
     router.refresh();
+  };
+
+  const obtenerEstiloLink = (href: string): React.CSSProperties => {
+    const activo = pathname === href;
+
+    return {
+      display: "block",
+      padding: "13px 16px",
+      borderRadius: "12px",
+      backgroundColor: activo
+        ? "rgba(255,255,255,0.28)"
+        : "rgba(255,255,255,0.15)",
+      color: "white",
+      textDecoration: "none",
+      fontSize: "15px",
+      fontWeight: activo ? "700" : "500",
+      border: activo ? "1px solid rgba(255,255,255,0.35)" : "1px solid transparent",
+      boxShadow: activo ? "0 4px 10px rgba(0,0,0,0.12)" : "none",
+      transition: "all 0.2s ease",
+      WebkitTextFillColor: "white",
+      opacity: 1,
+    };
   };
 
   return (
@@ -52,6 +75,9 @@ export default function DocenteLayout({
           justifyContent: "space-between",
           padding: "14px 12px",
           boxSizing: "border-box",
+          overflowY: "auto",
+          overflowX: "hidden",
+          zIndex: 1000,
         }}
       >
         <div>
@@ -62,6 +88,8 @@ export default function DocenteLayout({
               marginBottom: "16px",
               fontSize: "24px",
               fontWeight: "bold",
+              color: "white",
+              WebkitTextFillColor: "white",
             }}
           >
             Panel Docente
@@ -84,6 +112,9 @@ export default function DocenteLayout({
               textAlign: "center",
               fontWeight: "bold",
               fontSize: "16px",
+              color: "white",
+              WebkitTextFillColor: "white",
+              opacity: 1,
             }}
           >
             🧑‍🏫 Administrador
@@ -96,27 +127,39 @@ export default function DocenteLayout({
               gap: "10px",
             }}
           >
-            <Link href="/docente" style={linkBase}>
+            <Link href="/docente" style={obtenerEstiloLink("/docente")}>
               📊 Dashboard
             </Link>
 
-            <Link href="/docente/gestion-academica" style={linkBase}>
+            <Link
+              href="/docente/gestion-academica"
+              style={obtenerEstiloLink("/docente/gestion-academica")}
+            >
               📚 Gestión Académica
             </Link>
 
-            <Link href="/docente/estudiantes" style={linkBase}>
+            <Link
+              href="/docente/estudiantes"
+              style={obtenerEstiloLink("/docente/estudiantes")}
+            >
               🧑‍🎓 Estudiantes
             </Link>
 
-            <Link href="/docente/notas" style={linkBase}>
+            <Link href="/docente/notas" style={obtenerEstiloLink("/docente/notas")}>
               📝 Registro de Notas
             </Link>
 
-            <Link href="/docente/asistencia" style={linkBase}>
+            <Link
+              href="/docente/asistencia"
+              style={obtenerEstiloLink("/docente/asistencia")}
+            >
               🗓️ Asistencia
             </Link>
 
-            <Link href="/docente/reportes" style={linkBase}>
+            <Link
+              href="/docente/reportes"
+              style={obtenerEstiloLink("/docente/reportes")}
+            >
               📘 Reportes
             </Link>
           </nav>
@@ -128,12 +171,16 @@ export default function DocenteLayout({
             width: "100%",
             backgroundColor: "rgba(255,255,255,0.15)",
             color: "white",
-            border: "none",
+            border: "1px solid rgba(255,255,255,0.18)",
             padding: "12px",
             borderRadius: "12px",
             cursor: "pointer",
             fontWeight: "bold",
             fontSize: "16px",
+            marginTop: "18px",
+            flexShrink: 0,
+            WebkitTextFillColor: "white",
+            opacity: 1,
           }}
         >
           🚪 Salir
@@ -146,6 +193,8 @@ export default function DocenteLayout({
           flex: 1,
           padding: "25px",
           minWidth: 0,
+          width: "calc(100% - 250px)",
+          boxSizing: "border-box",
         }}
       >
         {children}
@@ -153,14 +202,3 @@ export default function DocenteLayout({
     </div>
   );
 }
-
-const linkBase: React.CSSProperties = {
-  display: "block",
-  padding: "13px 16px",
-  borderRadius: "12px",
-  backgroundColor: "rgba(255,255,255,0.15)",
-  color: "white",
-  textDecoration: "none",
-  fontSize: "15px",
-  fontWeight: "500",
-};

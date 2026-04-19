@@ -316,59 +316,64 @@ export default function AsistenciaPage() {
   }, [estadoPorEstudiante]);
 
   const renderTabla = (soloLectura: boolean) => (
-    <table
-      style={{
-        width: "100%",
-        borderCollapse: "collapse",
-      }}
-    >
-      <thead>
-        <tr style={{ backgroundColor: "#eef4ff" }}>
-          <th style={thStyle}>DNI</th>
-          <th style={thStyle}>Estudiante</th>
-          <th style={thStyle}>Estado de la fecha</th>
-        </tr>
-      </thead>
+    <div style={{ width: "100%", overflowX: "auto" }}>
+      <table
+        style={{
+          width: "100%",
+          minWidth: "700px",
+          borderCollapse: "collapse",
+        }}
+      >
+        <thead>
+          <tr style={{ backgroundColor: "#eef4ff" }}>
+            <th style={thStyle}>DNI</th>
+            <th style={thStyle}>Estudiante</th>
+            <th style={thStyle}>Estado de la fecha</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        {estudiantes.length > 0 ? (
-          estudiantes.map((estudiante) => (
-            <tr key={estudiante.id}>
-              <td style={tdStyle}>{estudiante.dni}</td>
-              <td style={tdStyle}>
-                {estudiante.apellidos}, {estudiante.nombres}
-              </td>
-              <td style={tdStyle}>
-                {soloLectura ? (
-                  <span>{estadoPorEstudiante[estudiante.id] || "-"}</span>
-                ) : (
-                  <select
-                    value={estadoPorEstudiante[estudiante.id] || ""}
-                    onChange={(e) =>
-                      cambiarEstado(estudiante.id, e.target.value)
-                    }
-                    style={selectStyle}
-                  >
-                    <option value="">-</option>
-                    <option value="A">A</option>
-                    <option value="T">T</option>
-                    <option value="J">J</option>
-                    <option value="F">F</option>
-                    <option value="I">I</option>
-                  </select>
-                )}
+        <tbody>
+          {estudiantes.length > 0 ? (
+            estudiantes.map((estudiante) => (
+              <tr key={estudiante.id}>
+                <td style={tdStyle}>{estudiante.dni}</td>
+                <td style={tdStyle}>
+                  {estudiante.apellidos}, {estudiante.nombres}
+                </td>
+                <td style={tdStyle}>
+                  {soloLectura ? (
+                    <span style={{ color: "#111", fontWeight: 600 }}>
+                      {estadoPorEstudiante[estudiante.id] ?? "-"}
+                    </span>
+                  ) : (
+                    <select
+                      value={estadoPorEstudiante[estudiante.id] ?? ""}
+                      onChange={(e) =>
+                        cambiarEstado(estudiante.id, e.target.value)
+                      }
+                      style={selectStyle}
+                    >
+                      <option value="">-</option>
+                      <option value="A">A</option>
+                      <option value="T">T</option>
+                      <option value="J">J</option>
+                      <option value="F">F</option>
+                      <option value="I">I</option>
+                    </select>
+                  )}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td style={tdStyle} colSpan={3}>
+                No hay estudiantes registrados en esta asignatura
               </td>
             </tr>
-          ))
-        ) : (
-          <tr>
-            <td style={tdStyle} colSpan={3}>
-              No hay estudiantes registrados en esta asignatura
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 
   return (
@@ -391,7 +396,7 @@ export default function AsistenciaPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "2fr 1fr 2fr",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
             gap: "18px",
             alignItems: "end",
           }}
@@ -401,7 +406,7 @@ export default function AsistenciaPage() {
             <select
               value={asignaturaSeleccionadaId}
               onChange={(e) => setAsignaturaSeleccionadaId(e.target.value)}
-              style={inputStyle}
+              style={selectStyle}
             >
               <option value="">Seleccione una asignatura</option>
               {asignaturas.map((asig) => (
@@ -418,7 +423,10 @@ export default function AsistenciaPage() {
               type="date"
               value={fechaSeleccionada}
               onChange={(e) => setFechaSeleccionada(e.target.value)}
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                WebkitTextFillColor: "#111",
+                }}
             />
           </div>
 
@@ -454,7 +462,7 @@ export default function AsistenciaPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr 1fr",
+              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
               gap: "18px",
               marginTop: "15px",
             }}
@@ -533,34 +541,34 @@ export default function AsistenciaPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(6, 1fr)",
+              gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
               gap: "12px",
               marginTop: "15px",
             }}
           >
             <div style={summaryCard("#d1fae5")}>
-              <strong>A</strong>
-              <div>{resumenDia.asistio}</div>
+              <strong style={{ color: "#111" }}>A</strong>
+              <div style={{ color: "#111" }}>{resumenDia.asistio}</div>
             </div>
             <div style={summaryCard("#fef3c7")}>
-              <strong>T</strong>
-              <div>{resumenDia.tardanza}</div>
+              <strong style={{ color: "#111" }}>T</strong>
+              <div style={{ color: "#111" }}>{resumenDia.tardanza}</div>
             </div>
             <div style={summaryCard("#dbeafe")}>
-              <strong>J</strong>
-              <div>{resumenDia.justificado}</div>
+              <strong style={{ color: "#111" }}>J</strong>
+              <div style={{ color: "#111" }}>{resumenDia.justificado}</div>
             </div>
             <div style={summaryCard("#fee2e2")}>
-              <strong>F</strong>
-              <div>{resumenDia.falta}</div>
+              <strong style={{ color: "#111" }}>F</strong>
+              <div style={{ color: "#111" }}>{resumenDia.falta}</div>
             </div>
             <div style={summaryCard("#ede9fe")}>
-              <strong>I</strong>
-              <div>{resumenDia.institucional}</div>
+              <strong style={{ color: "#111" }}>I</strong>
+              <div style={{ color: "#111" }}>{resumenDia.institucional}</div>
             </div>
             <div style={summaryCard("#dcfce7")}>
-              <strong>%</strong>
-              <div>{resumenDia.porcentaje}%</div>
+              <strong style={{ color: "#111" }}>%</strong>
+              <div style={{ color: "#111" }}>{resumenDia.porcentaje}%</div>
             </div>
           </div>
         </div>
@@ -587,10 +595,13 @@ export default function AsistenciaPage() {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                gap: "12px",
               }}
             >
               <div>
-                <h2 style={{ margin: 0 }}>Previsualización de asistencia</h2>
+                <h2 style={{ margin: 0, color: "#111" }}>
+                  Previsualización de asistencia
+                </h2>
                 <p style={{ margin: "6px 0 0 0", color: "#666" }}>
                   {obtenerNombreArea(asignaturaSeleccionada.area_id)} -{" "}
                   {asignaturaSeleccionada.grado} {asignaturaSeleccionada.seccion} -{" "}
@@ -610,38 +621,40 @@ export default function AsistenciaPage() {
               {renderTabla(true)}
 
               <div style={{ marginTop: "20px" }}>
-                <h3 style={{ marginBottom: "12px" }}>Resumen del día</h3>
+                <h3 style={{ marginBottom: "12px", color: "#111" }}>
+                  Resumen del día
+                </h3>
 
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(6, 1fr)",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
                     gap: "12px",
                   }}
                 >
                   <div style={summaryCard("#d1fae5")}>
-                    <strong>A</strong>
-                    <div>{resumenDia.asistio}</div>
+                    <strong style={{ color: "#111" }}>A</strong>
+                    <div style={{ color: "#111" }}>{resumenDia.asistio}</div>
                   </div>
                   <div style={summaryCard("#fef3c7")}>
-                    <strong>T</strong>
-                    <div>{resumenDia.tardanza}</div>
+                    <strong style={{ color: "#111" }}>T</strong>
+                    <div style={{ color: "#111" }}>{resumenDia.tardanza}</div>
                   </div>
                   <div style={summaryCard("#dbeafe")}>
-                    <strong>J</strong>
-                    <div>{resumenDia.justificado}</div>
+                    <strong style={{ color: "#111" }}>J</strong>
+                    <div style={{ color: "#111" }}>{resumenDia.justificado}</div>
                   </div>
                   <div style={summaryCard("#fee2e2")}>
-                    <strong>F</strong>
-                    <div>{resumenDia.falta}</div>
+                    <strong style={{ color: "#111" }}>F</strong>
+                    <div style={{ color: "#111" }}>{resumenDia.falta}</div>
                   </div>
                   <div style={summaryCard("#ede9fe")}>
-                    <strong>I</strong>
-                    <div>{resumenDia.institucional}</div>
+                    <strong style={{ color: "#111" }}>I</strong>
+                    <div style={{ color: "#111" }}>{resumenDia.institucional}</div>
                   </div>
                   <div style={summaryCard("#dcfce7")}>
-                    <strong>%</strong>
-                    <div>{resumenDia.porcentaje}%</div>
+                    <strong style={{ color: "#111" }}>%</strong>
+                    <div style={{ color: "#111" }}>{resumenDia.porcentaje}%</div>
                   </div>
                 </div>
               </div>
@@ -671,10 +684,13 @@ export default function AsistenciaPage() {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                gap: "12px",
               }}
             >
               <div>
-                <h2 style={{ margin: 0 }}>Editar o eliminar asistencia</h2>
+                <h2 style={{ margin: 0, color: "#111" }}>
+                  Editar o eliminar asistencia
+                </h2>
                 <p style={{ margin: "6px 0 0 0", color: "#666" }}>
                   {obtenerNombreArea(asignaturaSeleccionada.area_id)} -{" "}
                   {asignaturaSeleccionada.grado} {asignaturaSeleccionada.seccion}
@@ -693,7 +709,7 @@ export default function AsistenciaPage() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
                   gap: "18px",
                   marginBottom: "20px",
                 }}
@@ -714,7 +730,10 @@ export default function AsistenciaPage() {
                     type="date"
                     value={nuevaFechaGestion}
                     onChange={(e) => setNuevaFechaGestion(e.target.value)}
-                    style={inputStyle}
+                    style={{
+                      ...inputStyle,
+                      WebkitTextFillColor: "#111",
+                    }}
                   />
                 </div>
               </div>
@@ -790,6 +809,11 @@ const inputStyle = {
   border: "1px solid #ccc",
   outline: "none",
   boxSizing: "border-box" as const,
+  color: "#111",
+  backgroundColor: "#ffffff",
+  opacity: 1,
+  WebkitTextFillColor: "#111",
+  fontSize: "16px",
 };
 
 const readOnlyStyle = {
@@ -800,15 +824,25 @@ const readOnlyStyle = {
   outline: "none",
   boxSizing: "border-box" as const,
   backgroundColor: "#f1f5f9",
-  cursor: "not-allowed",
+  color: "#111",
+  opacity: 1,
+  WebkitTextFillColor: "#111",
+  fontSize: "16px",
 };
 
 const selectStyle = {
-  width: "80px",
-  padding: "8px",
-  borderRadius: "6px",
+  width: "100%",
+  minWidth: "250px",
+  padding: "10px",
+  borderRadius: "8px",
   border: "1px solid #ccc",
   outline: "none",
+  boxSizing: "border-box" as const,
+  color: "#111",
+  backgroundColor: "#ffffff",
+  opacity: 1,
+  WebkitTextFillColor: "#111",
+  fontSize: "16px",
 };
 
 const thStyle = {
@@ -824,6 +858,7 @@ const tdStyle = {
   border: "1px solid #ddd",
   textAlign: "center" as const,
   color: "#333",
+  verticalAlign: "middle" as const,
 };
 
 const btnPrimary = {
@@ -874,6 +909,7 @@ const overlayStyle = {
   justifyContent: "center",
   alignItems: "center",
   zIndex: 1000,
+  padding: "12px",
 };
 
 const closeButtonStyle = {
@@ -882,6 +918,7 @@ const closeButtonStyle = {
   fontSize: "22px",
   cursor: "pointer",
   color: "#666",
+  fontWeight: "bold",
 };
 
 const summaryCard = (backgroundColor: string) => ({
@@ -890,4 +927,8 @@ const summaryCard = (backgroundColor: string) => ({
   padding: "14px",
   textAlign: "center" as const,
   fontSize: "18px",
+  color: "#111",
+  fontWeight: "bold",
+  opacity: 1,
+  WebkitTextFillColor: "#111",
 });

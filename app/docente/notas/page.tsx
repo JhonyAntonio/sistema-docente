@@ -92,6 +92,7 @@ export default function RegistroNotasPage() {
   const [competenciaId, setCompetenciaId] = useState("");
   const [capacidadId, setCapacidadId] = useState("");
   const [asunto, setAsunto] = useState("");
+  const [mensaje, setMensaje] = useState("");
 
   const [notasSeleccionadas, setNotasSeleccionadas] = useState<
     Record<number, string>
@@ -118,14 +119,13 @@ export default function RegistroNotasPage() {
   }, [asignaturaSeleccionadaId]);
 
   useEffect(() => {
-    if (!calificacionSeleccionadaId) {
-      setNotasSeleccionadas({});
-      return;
-    }
+    if (!calificacionSeleccionadaId) return;
 
     const mapa: Record<number, string> = {};
     detalles
-      .filter((item) => item.calificacion_id === Number(calificacionSeleccionadaId))
+      .filter(
+        (item) => item.calificacion_id === Number(calificacionSeleccionadaId)
+      )
       .forEach((item) => {
         mapa[item.estudiante_id] = item.nota;
       });
@@ -450,11 +450,17 @@ export default function RegistroNotasPage() {
   const obtenerPromedioUnidad = (estudianteId: number) => {
     const detallesDeUnidad = detalles.filter((detalle) => {
       const cal = calificaciones.find((c) => c.id === detalle.calificacion_id);
-      return cal?.unidad === unidadSeleccionada && detalle.estudiante_id === estudianteId;
+      return (
+        cal?.unidad === unidadSeleccionada &&
+        detalle.estudiante_id === estudianteId
+      );
     });
 
     const otrasNotas = detallesDeUnidad
-      .filter((detalle) => detalle.calificacion_id !== Number(calificacionSeleccionadaId))
+      .filter(
+        (detalle) =>
+          detalle.calificacion_id !== Number(calificacionSeleccionadaId)
+      )
       .map((detalle) => detalle.nota);
 
     const notaActual = notasSeleccionadas[estudianteId];
@@ -489,30 +495,9 @@ export default function RegistroNotasPage() {
 
       const promedio = obtenerPromedioUnidad(estudiante.id);
 
-      const detalleExistente = detalles.find(
-        (item) =>
-          item.calificacion_id === calificacionSeleccionada.id &&
-          item.estudiante_id === estudiante.id
-      );
-
-      if (detalleExistente) {
-        const { error } = await supabase
-          .from("detalle_calificaciones")
-          .update({
-            nota,
-            promedio_letra: promedio.letra,
-            promedio_valor: promedio.valor,
-            fecha_actualizacion: new Date().toISOString(),
-          })
-          .eq("id", detalleExistente.id);
-
-        if (error) {
-          console.log("Error al actualizar detalle:", error);
-          alert("No se pudo actualizar una de las notas");
-          return false;
-        }
-      } else {
-        const { error } = await supabase.from("detalle_calificaciones").insert([
+      const { data, error } = await supabase
+        .from("detalle_calificaciones")
+        .upsert(
           {
             calificacion_id: calificacionSeleccionada.id,
             estudiante_id: estudiante.id,
@@ -520,21 +505,33 @@ export default function RegistroNotasPage() {
             promedio_letra: promedio.letra,
             promedio_valor: promedio.valor,
             publicado: false,
+            fecha_actualizacion: new Date().toISOString(),
           },
-        ]);
+          {
+            onConflict: "calificacion_id,estudiante_id",
+          }
+        )
+        .select();
 
-        if (error) {
-          console.log("Error al guardar detalle:", error);
-          alert("No se pudo guardar una de las notas");
-          return false;
-        }
+      console.log("GUARDANDO:", {
+        estudiante_id: estudiante.id,
+        calificacion_id: calificacionSeleccionada.id,
+        nota,
+        data,
+        error,
+      });
+
+      if (error) {
+        console.log("Error al guardar detalle:", error);
+        alert("No se pudo guardar una de las notas");
+        return false;
       }
     }
 
     await cargarTodoDeAsignatura(Number(asignaturaSeleccionadaId));
 
     if (mostrarMensaje) {
-      alert("Notas guardadas correctamente");
+      setMensaje("Notas guardadas correctamente ✔");
     }
 
     return true;
@@ -600,7 +597,13 @@ export default function RegistroNotasPage() {
       letra: convertirValorALetra(promedio),
       valor: Number(promedio.toFixed(2)),
     };
-  }, [estudiantes, detalles, notasSeleccionadas, unidadSeleccionada, calificacionSeleccionadaId]);
+  }, [
+    estudiantes,
+    detalles,
+    notasSeleccionadas,
+    unidadSeleccionada,
+    calificacionSeleccionadaId,
+  ]);
 
   return (
     <div
@@ -611,6 +614,25 @@ export default function RegistroNotasPage() {
         padding: "25px",
       }}
     >
+      {mensaje && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            backgroundColor: "#28a745",
+            color: "white",
+            padding: "12px 18px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+            zIndex: 9999,
+            fontWeight: "bold",
+          }}
+        >
+          {mensaje}
+        </div>
+      )}
+
       <div style={cardStyle}>
         <h1 style={{ margin: 0, color: "#1e3c72" }}>Registro de Notas</h1>
         <p style={{ marginTop: "8px", color: "#666" }}>
@@ -641,7 +663,8 @@ export default function RegistroNotasPage() {
               <option value="">Seleccione una asignatura</option>
               {asignaturas.map((asig) => (
                 <option key={asig.id} value={asig.id}>
-                  {obtenerNombreArea(asig.area_id)} - {asig.grado} {asig.seccion}
+                  {obtenerNombreArea(asig.area_id)} - {asig.grado}{" "}
+                  {asig.seccion}
                 </option>
               ))}
             </select>
@@ -677,7 +700,9 @@ export default function RegistroNotasPage() {
               disabled={!calificacionSeleccionada}
               style={{
                 ...btnGray,
-                backgroundColor: !calificacionSeleccionada ? "#9aa0a6" : "#007bff",
+                backgroundColor: !calificacionSeleccionada
+                  ? "#9aa0a6"
+                  : "#007bff",
                 cursor: !calificacionSeleccionada ? "not-allowed" : "pointer",
               }}
             >
@@ -689,7 +714,9 @@ export default function RegistroNotasPage() {
               disabled={!calificacionSeleccionada}
               style={{
                 ...btnGray,
-                backgroundColor: !calificacionSeleccionada ? "#9aa0a6" : "#dc3545",
+                backgroundColor: !calificacionSeleccionada
+                  ? "#9aa0a6"
+                  : "#dc3545",
                 cursor: !calificacionSeleccionada ? "not-allowed" : "pointer",
               }}
             >
@@ -786,7 +813,9 @@ export default function RegistroNotasPage() {
                 type="text"
                 value={
                   calificacionSeleccionada
-                    ? obtenerNombreCompetencia(calificacionSeleccionada.competencia_id)
+                    ? obtenerNombreCompetencia(
+                        calificacionSeleccionada.competencia_id
+                      )
                     : ""
                 }
                 readOnly
@@ -800,7 +829,9 @@ export default function RegistroNotasPage() {
                 type="text"
                 value={
                   calificacionSeleccionada
-                    ? obtenerNombreCapacidad(calificacionSeleccionada.capacidad_id)
+                    ? obtenerNombreCapacidad(
+                        calificacionSeleccionada.capacidad_id
+                      )
                     : ""
                 }
                 readOnly
@@ -881,7 +912,7 @@ export default function RegistroNotasPage() {
                       </td>
                       <td style={tdStyle}>
                         <select
-                          value={notasSeleccionadas[estudiante.id] || ""}
+                          value={notasSeleccionadas[estudiante.id] ?? ""}
                           onChange={(e) =>
                             cambiarNota(estudiante.id, e.target.value)
                           }
@@ -916,7 +947,9 @@ export default function RegistroNotasPage() {
 
       {unidadSeleccionada && (
         <div style={cardStyle}>
-          <h2 style={{ marginTop: 0, color: "#333" }}>Resumen actual de la unidad</h2>
+          <h2 style={{ marginTop: 0, color: "#333" }}>
+            Resumen actual de la unidad
+          </h2>
 
           <div
             style={{
@@ -941,7 +974,9 @@ export default function RegistroNotasPage() {
             <div style={summaryCard("#fef3c7")}>
               <strong>Promedio Valor</strong>
               <div>
-                {promedioGeneralUnidad.valor === 0 ? "-" : promedioGeneralUnidad.valor}
+                {promedioGeneralUnidad.valor === 0
+                  ? "-"
+                  : promedioGeneralUnidad.valor}
               </div>
             </div>
           </div>
@@ -1034,7 +1069,10 @@ export default function RegistroNotasPage() {
             >
               <h2 style={{ margin: 0 }}>Crear calificación</h2>
 
-              <button onClick={cerrarFormularioCalificacion} style={closeButtonStyle}>
+              <button
+                onClick={cerrarFormularioCalificacion}
+                style={closeButtonStyle}
+              >
                 ×
               </button>
             </div>
@@ -1121,7 +1159,10 @@ export default function RegistroNotasPage() {
                   Guardar
                 </button>
 
-                <button onClick={cerrarFormularioCalificacion} style={btnGraySmall}>
+                <button
+                  onClick={cerrarFormularioCalificacion}
+                  style={btnGraySmall}
+                >
                   Cancelar
                 </button>
               </div>

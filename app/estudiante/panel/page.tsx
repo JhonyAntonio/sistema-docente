@@ -174,9 +174,7 @@ export default function PanelEstudiante() {
 
         const calificaciones = (dataCalificaciones as Calificacion[]) || [];
 
-        const asignaturaIds = [
-          ...new Set(calificaciones.map((c) => c.asignatura_id)),
-        ];
+        const asignaturaIds = [...new Set(calificaciones.map((c) => c.asignatura_id))];
 
         const { data: dataAsignaturas, error: errorAsignaturas } = await supabase
           .from("asignaturas")
@@ -221,13 +219,13 @@ export default function PanelEstudiante() {
 
           return {
             id: detalle.id,
-            curso: area?.nombre || "Curso no encontrado",
-            unidad: calificacion?.unidad || "-",
-            asunto: calificacion?.asunto || "-",
-            nota: detalle.nota || "-",
+            curso: area?.nombre ?? "Curso no encontrado",
+            unidad: calificacion?.unidad ?? "-",
+            asunto: calificacion?.asunto ?? "-",
+            nota: detalle.nota ?? "-",
             promedioLetra: detalle.promedio_letra,
             promedioValor: detalle.promedio_valor,
-            fecha: detalle.fecha_registro || detalle.fecha_actualizacion || "-",
+            fecha: detalle.fecha_registro ?? detalle.fecha_actualizacion ?? "-",
           };
         });
 
@@ -361,7 +359,7 @@ export default function PanelEstudiante() {
     );
 
     return {
-      letra: registroConPromedio?.promedioLetra || "-",
+      letra: registroConPromedio?.promedioLetra ?? "-",
       valor:
         registroConPromedio?.promedioValor !== null &&
         registroConPromedio?.promedioValor !== undefined
@@ -372,168 +370,60 @@ export default function PanelEstudiante() {
 
   if (cargando) {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "linear-gradient(135deg, #000000, #001f3f, #000000)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "white",
-          fontSize: "18px",
-        }}
-      >
+      <div style={loadingContainer}>
         Cargando datos del estudiante...
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #000000, #001f3f, #000000)",
-        color: "#fff",
-        padding: "30px 20px",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "1150px",
-          margin: "0 auto",
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: "#111",
-            borderRadius: "14px",
-            padding: "25px",
-            marginBottom: "20px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "15px",
-            flexWrap: "wrap",
-          }}
-        >
+    <div style={pageStyle}>
+      <div style={containerStyle}>
+        <div style={headerStyle}>
           <div>
-            <h1 style={{ color: "#FFC300", marginBottom: "8px" }}>
-              Panel del Estudiante
-            </h1>
-            <p style={{ margin: 0 }}>Bienvenido al sistema.</p>
+            <h1 style={titleStyle}>Panel del Estudiante</h1>
+            <p style={subtitleStyle}>Bienvenido al sistema.</p>
           </div>
 
-          <button
-            onClick={cerrarSesion}
-            style={{
-              padding: "12px 18px",
-              backgroundColor: "#FFC300",
-              color: "#000",
-              fontWeight: "bold",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
+          <button onClick={cerrarSesion} style={logoutButton}>
             Cerrar sesión
           </button>
         </div>
 
-        {mensaje && (
-          <div
-            style={{
-              backgroundColor: "#2a1215",
-              color: "#ffb3b3",
-              padding: "15px",
-              borderRadius: "10px",
-              marginBottom: "20px",
-            }}
-          >
-            {mensaje}
-          </div>
-        )}
+        {mensaje && <div style={alertStyle}>{mensaje}</div>}
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "20px",
-            marginBottom: "20px",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#111",
-              borderRadius: "14px",
-              padding: "25px",
-            }}
-          >
-            <h2 style={{ color: "#FFC300", marginBottom: "18px" }}>
-              Mis datos
-            </h2>
+        <div style={summaryGrid}>
+          <div style={panelCard}>
+            <h2 style={sectionTitle}>Mis datos</h2>
 
-            <p><strong>Nombres:</strong> {estudiante?.nombres || "-"}</p>
-            <p><strong>Apellidos:</strong> {estudiante?.apellidos || "-"}</p>
-            <p><strong>DNI:</strong> {estudiante?.dni || "-"}</p>
-            <p><strong>Grado:</strong> {estudiante?.grado || "-"}</p>
-            <p><strong>Sección:</strong> {estudiante?.seccion || "-"}</p>
+            <p style={textRow}><strong>Nombres:</strong> {estudiante?.nombres ?? "-"}</p>
+            <p style={textRow}><strong>Apellidos:</strong> {estudiante?.apellidos ?? "-"}</p>
+            <p style={textRow}><strong>DNI:</strong> {estudiante?.dni ?? "-"}</p>
+            <p style={textRow}><strong>Grado:</strong> {estudiante?.grado ?? "-"}</p>
+            <p style={textRow}><strong>Sección:</strong> {estudiante?.seccion ?? "-"}</p>
           </div>
 
-          <div
-            style={{
-              backgroundColor: "#111",
-              borderRadius: "14px",
-              padding: "25px",
-            }}
-          >
-            <h2 style={{ color: "#FFC300", marginBottom: "18px" }}>
-              Resumen de asistencia
-            </h2>
+          <div style={panelCard}>
+            <h2 style={sectionTitle}>Resumen de asistencia</h2>
 
-            <p><strong>Total de registros:</strong> {totalRegistros}</p>
-            <p><strong>Asistencias:</strong> {totalAsistio}</p>
-            <p><strong>Faltas:</strong> {totalFaltas}</p>
-            <p><strong>Tardanzas:</strong> {totalTardanzas}</p>
-            <p><strong>Porcentaje:</strong> {porcentajeAsistencia}%</p>
+            <p style={textRow}><strong>Total de registros:</strong> {totalRegistros}</p>
+            <p style={textRow}><strong>Asistencias:</strong> {totalAsistio}</p>
+            <p style={textRow}><strong>Faltas:</strong> {totalFaltas}</p>
+            <p style={textRow}><strong>Tardanzas:</strong> {totalTardanzas}</p>
+            <p style={textRow}><strong>Porcentaje:</strong> {porcentajeAsistencia}%</p>
           </div>
         </div>
 
-        <div
-          style={{
-            backgroundColor: "#111",
-            borderRadius: "14px",
-            padding: "25px",
-            marginBottom: "20px",
-          }}
-        >
-          <h2 style={{ color: "#FFC300", marginBottom: "18px" }}>
-            Mis notas por unidad
-          </h2>
+        <div style={panelCard}>
+          <h2 style={sectionTitle}>Mis notas por unidad</h2>
 
           <div style={{ marginBottom: "20px", maxWidth: "260px" }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: "bold",
-                color: "#fff",
-              }}
-            >
-              Selecciona una unidad
-            </label>
+            <label style={selectLabel}>Selecciona una unidad</label>
 
             <select
               value={unidadSeleccionada}
               onChange={(e) => setUnidadSeleccionada(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "12px",
-                borderRadius: "8px",
-                border: "1px solid #444",
-                backgroundColor: "#000",
-                color: "#fff",
-                outline: "none",
-              }}
+              style={selectStyle}
             >
               <option value="Unidad 1">Unidad 1</option>
               <option value="Unidad 2">Unidad 2</option>
@@ -543,14 +433,7 @@ export default function PanelEstudiante() {
           </div>
 
           {notasUnidadSeleccionada.length === 0 ? (
-            <div
-              style={{
-                backgroundColor: "#0d1b2a",
-                border: "1px solid #2f3e56",
-                borderRadius: "10px",
-                padding: "18px",
-              }}
-            >
+            <div style={emptyBox}>
               Aún no hay registros en {unidadSeleccionada}.
             </div>
           ) : (
@@ -560,6 +443,7 @@ export default function PanelEstudiante() {
                   style={{
                     width: "100%",
                     borderCollapse: "collapse",
+                    minWidth: "650px",
                   }}
                 >
                   <thead>
@@ -581,69 +465,37 @@ export default function PanelEstudiante() {
                 </table>
               </div>
 
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-                  gap: "15px",
-                }}
-              >
-                <div
-                  style={{
-                    backgroundColor: "#0d1b2a",
-                    border: "1px solid #2f3e56",
-                    borderRadius: "10px",
-                    padding: "18px",
-                  }}
-                >
-                  <p style={{ margin: 0, color: "#FFC300", fontWeight: "bold" }}>
+              <div style={averageGrid}>
+                <div style={averageCard}>
+                  <p style={averageLabel}>
                     Promedio de {unidadSeleccionada} (Letra)
                   </p>
-                  <p style={{ margin: "10px 0 0 0", fontSize: "24px" }}>
-                    {promedioUnidadSeleccionada.letra}
-                  </p>
+                  <p style={averageValue}>{promedioUnidadSeleccionada.letra}</p>
                 </div>
 
-                <div
-                  style={{
-                    backgroundColor: "#0d1b2a",
-                    border: "1px solid #2f3e56",
-                    borderRadius: "10px",
-                    padding: "18px",
-                  }}
-                >
-                  <p style={{ margin: 0, color: "#FFC300", fontWeight: "bold" }}>
+                <div style={averageCard}>
+                  <p style={averageLabel}>
                     Promedio de {unidadSeleccionada} (Valor)
                   </p>
-                  <p style={{ margin: "10px 0 0 0", fontSize: "24px" }}>
-                    {promedioUnidadSeleccionada.valor}
-                  </p>
+                  <p style={averageValue}>{promedioUnidadSeleccionada.valor}</p>
                 </div>
               </div>
             </>
           )}
         </div>
 
-        <div
-          style={{
-            backgroundColor: "#111",
-            borderRadius: "14px",
-            padding: "25px",
-            marginBottom: "20px",
-          }}
-        >
-          <h2 style={{ color: "#FFC300", marginBottom: "18px" }}>
-            Mi registro de asistencia
-          </h2>
+        <div style={panelCard}>
+          <h2 style={sectionTitle}>Mi registro de asistencia</h2>
 
           {asistencias.length === 0 ? (
-            <p>No hay asistencias registradas todavía.</p>
+            <p style={textRow}>No hay asistencias registradas todavía.</p>
           ) : (
             <div style={{ overflowX: "auto" }}>
               <table
                 style={{
                   width: "100%",
                   borderCollapse: "collapse",
+                  minWidth: "500px",
                 }}
               >
                 <thead>
@@ -665,16 +517,8 @@ export default function PanelEstudiante() {
           )}
         </div>
 
-        <div
-          style={{
-            backgroundColor: "#111",
-            borderRadius: "14px",
-            padding: "25px",
-          }}
-        >
-          <h2 style={{ color: "#FFC300", marginBottom: "18px" }}>
-            Cambiar contraseña
-          </h2>
+        <div style={panelCard}>
+          <h2 style={sectionTitle}>Cambiar contraseña</h2>
 
           <input
             type="password"
@@ -708,6 +552,7 @@ export default function PanelEstudiante() {
                   : "#ff7b7b",
                 marginBottom: "12px",
                 fontSize: "14px",
+                opacity: 1,
               }}
             >
               {mensajeClave}
@@ -718,14 +563,7 @@ export default function PanelEstudiante() {
             onClick={cambiarClave}
             disabled={guardandoClave}
             style={{
-              width: "100%",
-              padding: "12px",
-              backgroundColor: "#FFC300",
-              color: "#000",
-              fontWeight: "bold",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
+              ...updateButton,
               opacity: guardandoClave ? 0.7 : 1,
             }}
           >
@@ -737,17 +575,175 @@ export default function PanelEstudiante() {
   );
 }
 
+const pageStyle = {
+  minHeight: "100vh",
+  background: "linear-gradient(135deg, #000000, #001f3f, #000000)",
+  color: "#fff",
+  padding: "30px 20px",
+};
+
+const containerStyle = {
+  maxWidth: "1150px",
+  margin: "0 auto",
+};
+
+const loadingContainer = {
+  minHeight: "100vh",
+  background: "linear-gradient(135deg, #000000, #001f3f, #000000)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  color: "white",
+  fontSize: "18px",
+};
+
+const headerStyle = {
+  backgroundColor: "#111",
+  borderRadius: "14px",
+  padding: "25px",
+  marginBottom: "20px",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "15px",
+  flexWrap: "wrap" as const,
+};
+
+const titleStyle = {
+  color: "#FFC300",
+  marginBottom: "8px",
+  marginTop: 0,
+  WebkitTextFillColor: "#FFC300",
+};
+
+const subtitleStyle = {
+  margin: 0,
+  color: "#ffffff",
+  opacity: 1,
+  WebkitTextFillColor: "#ffffff",
+};
+
+const logoutButton = {
+  padding: "12px 18px",
+  backgroundColor: "#FFC300",
+  color: "#000",
+  fontWeight: "bold",
+  border: "none",
+  borderRadius: "8px",
+  cursor: "pointer",
+};
+
+const alertStyle = {
+  backgroundColor: "#2a1215",
+  color: "#ffb3b3",
+  padding: "15px",
+  borderRadius: "10px",
+  marginBottom: "20px",
+  opacity: 1,
+};
+
+const summaryGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+  gap: "20px",
+  marginBottom: "20px",
+};
+
+const panelCard = {
+  backgroundColor: "#111",
+  borderRadius: "14px",
+  padding: "25px",
+  marginBottom: "20px",
+  color: "#fff",
+};
+
+const sectionTitle = {
+  color: "#FFC300",
+  marginBottom: "18px",
+  marginTop: 0,
+  WebkitTextFillColor: "#FFC300",
+};
+
+const textRow = {
+  color: "#ffffff",
+  opacity: 1,
+  WebkitTextFillColor: "#ffffff",
+};
+
+const selectLabel = {
+  display: "block",
+  marginBottom: "8px",
+  fontWeight: "bold",
+  color: "#fff",
+  WebkitTextFillColor: "#fff",
+  opacity: 1,
+};
+
+const selectStyle = {
+  width: "100%",
+  padding: "12px",
+  borderRadius: "8px",
+  border: "1px solid #444",
+  backgroundColor: "#000",
+  color: "#fff",
+  outline: "none",
+  opacity: 1,
+  WebkitTextFillColor: "#fff",
+  fontSize: "16px",
+};
+
+const emptyBox = {
+  backgroundColor: "#0d1b2a",
+  border: "1px solid #2f3e56",
+  borderRadius: "10px",
+  padding: "18px",
+  color: "#ffffff",
+  opacity: 1,
+};
+
+const averageGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  gap: "15px",
+};
+
+const averageCard = {
+  backgroundColor: "#0d1b2a",
+  border: "1px solid #2f3e56",
+  borderRadius: "10px",
+  padding: "18px",
+};
+
+const averageLabel = {
+  margin: 0,
+  color: "#FFC300",
+  fontWeight: "bold",
+  WebkitTextFillColor: "#FFC300",
+};
+
+const averageValue = {
+  margin: "10px 0 0 0",
+  fontSize: "24px",
+  color: "#ffffff",
+  WebkitTextFillColor: "#ffffff",
+  opacity: 1,
+};
+
 const thStyle = {
   border: "1px solid #2f3e56",
   padding: "12px",
   textAlign: "left" as const,
   color: "#fff",
+  opacity: 1,
+  WebkitTextFillColor: "#fff",
 };
 
 const tdStyle = {
   border: "1px solid #2f3e56",
   padding: "12px",
   color: "#fff",
+  opacity: 1,
+  WebkitTextFillColor: "#fff",
 };
 
 const inputStyle = {
@@ -760,4 +756,18 @@ const inputStyle = {
   color: "#fff",
   outline: "none",
   boxSizing: "border-box" as const,
+  opacity: 1,
+  WebkitTextFillColor: "#fff",
+  fontSize: "16px",
+};
+
+const updateButton = {
+  width: "100%",
+  padding: "12px",
+  backgroundColor: "#FFC300",
+  color: "#000",
+  fontWeight: "bold",
+  border: "none",
+  borderRadius: "8px",
+  cursor: "pointer",
 };
